@@ -8,7 +8,7 @@ make install
 ```
 
 ### Manifest -> Helm Package
-A neat little tool call helmify handles this.
+A neat little tool called `helmify` handles this. Place your raw manifests in `manifests/dir_name`.
 ```
 # package up manifest into a helm chart in charts/
 make package
@@ -20,4 +20,10 @@ make package
 
 # deploy the chart
 make install
+```
+
+### Cleanup Cluster and Deployments
+Handy for rebuilding or freeing up resources.
+```
+make clean
 ```
