@@ -1,0 +1,48 @@
+repositories:
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
+
+- name: matheusfm
+  url: https://matheusfm.dev/charts
+
+releases:
+- name: contour
+  chart: bitnami/contour
+  namespace: contour
+
+- name: prom-crds
+  namespace: monitoring
+  chart: prometheus-community/prometheus-operator-crds
+  set:
+  - name: "app.kubernetes.io/managed-by"
+    value: "Helm"
+  - name: "meta.helm.sh/release-name"
+    value: "prom-crds"
+  - name: "meta.helm.sh/release-namespace"
+    value: "monitoring"
+
+- name: prom
+  needs:
+    - prom-crds
+  namespace: monitoring
+  chart: prometheus-community/kube-prometheus-stack
+  set:
+  - name: "app.kubernetes.io/managed-by"
+    value: "Helm"
+  - name: "meta.helm.sh/release-name"
+    value: "prom"
+  - name: "meta.helm.sh/release-namespace"
+    value: "monitoring"
+
+- name: httpbin
+  namespace: httpbin
+  chart: charts/httpbin
+  set:
+    - name: service.port
+      value: 8080
+    - name: spec.ingressClassName
+      value: contour
+
