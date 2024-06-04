@@ -15,7 +15,7 @@ spec:
         app: httpbin
     spec:
       containers:
-      - image: kong/httpbin #kennethreitz/httpbin
+      - image: docker.io/kong/httpbin:latest
         name: httpbin
 ---
 apiVersion: v1
