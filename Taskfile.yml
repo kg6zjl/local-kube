@@ -9,7 +9,7 @@ tasks:
     cmds:
       - echo "Installing dependencies"
       - brew install podman helmfile kind kubectl helm jq yq openlens
-      - brew install --cask podman-desktop
+      - brew install --cask podman-desktop || echo "Already Installed"
       - podman machine init || echo "Already initilized"
       - podman machine stop || echo "Already stopped"
       - podman machine set --rootful
