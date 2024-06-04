@@ -1,0 +1,58 @@
+version: '3'
+
+tasks:
+  up:
+    deps: [cluster, package, install]
+
+  init:
+    desc: Installing dependencies
+    cmds:
+      - echo "Installing dependencies"
+      - brew install podman helmfile kind kubectl helm jq yq openlens
+      - brew install --cask podman-desktop
+      - podman machine init || echo "Already initilized"
+      - podman machine stop || echo "Already stopped"
+      - podman machine set --rootful
+      - podman machine start || echo "Already started"
+      - helm plugin install https://github.com/databus23/helm-diff || echo "Plugin already exists"
+      - brew install arttor/tap/helmify
+
+  cluster:
+    desc: Starting podman and creating KinD cluster
+    cmds:
+      - echo "Starting podman and creating KinD cluster"
+      - podman machine start || echo "Podman already started, continuing."
+      - kind create cluster --wait 30s --config ./cluster.yaml
+
+  start:
+    desc: Start podman machine
+    cmds:
+      - podman machine start || echo "Already started"
+
+  stop:
+    desc: Stop podman machine
+    cmds:
+      - podman machine stop || echo "Already stopped"
+
+  clean:
+    desc: Delete cluster and stop podman machine
+    cmds:
+      - kind delete cluster --name local-kube
+      - podman machine stop
+
+  apply:
+    desc: Apply helmfile
+    cmds:
+      - helmfile apply
+
+  install:
+    desc: Init and sync helmfile
+    cmds:
+      - helmfile init --force
+      - helmfile sync
+
+  package:
+    desc: Package manifests into charts
+    cmds:
+      - mkdir -p charts
+      - for dir in $(ls -1 -d manifests/* | sed 's/manifests\///g'); do helmify -f manifests/${dir} -r charts/${dir}; done

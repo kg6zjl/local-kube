@@ -2,16 +2,23 @@
 
 ### Build Your Development Environment
 ```
-make init
-make cluster
-make install
+task init
+```
+
+### Run The Local Cluster
+```
+task up
+# or 
+task cluster
+task package
+task install
 ```
 
 ### Manifest -> Helm Package
 A neat little tool called `helmify` handles this. Place your raw manifests in `manifests/dir_name`.
 ```
 # package up manifest into a helm chart in charts/
-make package
+task package
 
 # add a block to helmfile, sample:
 # - name: sample_chart
@@ -19,11 +26,11 @@ make package
 #   chart: charts/sample_chart
 
 # deploy the chart
-make install
+task install
 ```
 
 ### Cleanup Cluster and Deployments
 Handy for rebuilding or freeing up resources.
 ```
-make clean
+task clean
 ```
