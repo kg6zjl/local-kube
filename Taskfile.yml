@@ -1,7 +1,16 @@
 version: '3'
 
 tasks:
+  default:
+    silent: true
+    desc: <-- You are here
+    cmds:
+      - echo "Please pick from one of these options:"
+      - task --list-all
+      - task `task --list-all | grep "^*" | tr -d ':' | pick -c2`
+
   up:
+    desc: Runs cluster, package and install
     deps: [cluster, package, install]
 
   init:
@@ -56,3 +65,8 @@ tasks:
     cmds:
       - mkdir -p charts
       - for dir in $(ls -1 -d manifests/* | sed 's/manifests\///g'); do helmify -f manifests/${dir} -r charts/${dir}; done
+
+  config:
+    desc: Update kube config
+    cmds:
+      - kind get --name local-kube kubeconfig > ~/.kube/config
